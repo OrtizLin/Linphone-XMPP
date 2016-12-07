@@ -1,0 +1,39 @@
+
+/* Class = "IBUIButton"; accessibilityLabel = "Chat"; ObjectID = "5"; */
+"5.accessibilityLabel" = "訊息";
+
+/* Class = "IBUIButton"; normalTitle = "Chat"; ObjectID = "5"; */
+"5.normalTitle" = "訊息";
+
+/* Class = "IBUIButton"; accessibilityLabel = "History"; ObjectID = "6"; */
+"6.accessibilityLabel" = "通話記錄";
+
+/* Class = "IBUIButton"; normalTitle = "History"; ObjectID = "6"; */
+"6.normalTitle" = "通話記錄";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Dialer"; ObjectID = "7"; */
+"7.accessibilityLabel" = "播號";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Contacts"; ObjectID = "8"; */
+"8.accessibilityLabel" = "通訊錄";
+
+/* Class = "IBUIButton"; normalTitle = "Contacts"; ObjectID = "8"; */
+"8.normalTitle" = "通訊錄";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Settings"; ObjectID = "9"; */
+"9.accessibilityLabel" = "設定";
+
+/* Class = "IBUIButton"; normalTitle = "Settings"; ObjectID = "9"; */
+"9.normalTitle" = "設定";
+
+/* Class = "IBUILabel"; accessibilityLabel = "Missed call(s)"; ObjectID = "34"; */
+"34.accessibilityLabel" = "未接電話";
+
+/* Class = "IBUILabel"; text = "99"; ObjectID = "34"; */
+"34.text" = "99";
+
+/* Class = "IBUILabel"; accessibilityLabel = "Missed message(s)"; ObjectID = "38"; */
+"38.accessibilityLabel" = "未接訊息";
+
+/* Class = "IBUILabel"; text = "99"; ObjectID = "38"; */
+"38.text" = "99";

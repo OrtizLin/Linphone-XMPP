@@ -1,0 +1,143 @@
+
+/* Class = "IBUIButton"; accessibilityLabel = "Back"; ObjectID = "6"; */
+"6.accessibilityLabel" = "倒回";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Hangup"; ObjectID = "7"; */
+"7.accessibilityLabel" = "掛斷";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Pause"; ObjectID = "8"; */
+"8.accessibilityLabel" = "暫停";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Speaker"; ObjectID = "9"; */
+"9.accessibilityLabel" = "揚聲器";
+
+/* Class = "IBUIButton"; normalTitle = "Speaker"; ObjectID = "9"; */
+"9.normalTitle" = "揚聲器";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Options"; ObjectID = "10"; */
+"10.accessibilityLabel" = "設定";
+
+/* Class = "IBUIButton"; normalTitle = "Options"; ObjectID = "10"; */
+"10.normalTitle" = "設定";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Micro"; ObjectID = "11"; */
+"11.accessibilityLabel" = "麥克風";
+
+/* Class = "IBUIButton"; normalTitle = "Micro"; ObjectID = "11"; */
+"11.normalTitle" = "麥克風";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Video"; ObjectID = "12"; */
+"12.accessibilityLabel" = "視訊";
+
+/* Class = "IBUIButton"; normalTitle = "Video"; ObjectID = "12"; */
+"12.normalTitle" = "視訊";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Start conference"; ObjectID = "21"; */
+"21.accessibilityLabel" = "開始會議";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Star"; ObjectID = "62"; */
+"62.accessibilityLabel" = "*";
+
+/* Class = "IBUIButton"; accessibilityLabel = "6"; ObjectID = "63"; */
+"63.accessibilityLabel" = "6";
+
+/* Class = "IBUIButton"; accessibilityLabel = "0"; ObjectID = "64"; */
+"64.accessibilityLabel" = "0";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Sharp"; ObjectID = "65"; */
+"65.accessibilityLabel" = "#";
+
+/* Class = "IBUIButton"; accessibilityLabel = "9"; ObjectID = "66"; */
+"66.accessibilityLabel" = "9";
+
+/* Class = "IBUIButton"; accessibilityLabel = "8"; ObjectID = "67"; */
+"67.accessibilityLabel" = "8";
+
+/* Class = "IBUIButton"; accessibilityLabel = "7"; ObjectID = "68"; */
+"68.accessibilityLabel" = "7";
+
+/* Class = "IBUIButton"; accessibilityLabel = "4"; ObjectID = "69"; */
+"69.accessibilityLabel" = "4";
+
+/* Class = "IBUIButton"; accessibilityLabel = "5"; ObjectID = "70"; */
+"70.accessibilityLabel" = "5";
+
+/* Class = "IBUIButton"; accessibilityLabel = "3"; ObjectID = "71"; */
+"71.accessibilityLabel" = "3";
+
+/* Class = "IBUIButton"; accessibilityLabel = "2"; ObjectID = "72"; */
+"72.accessibilityLabel" = "2";
+
+/* Class = "IBUIButton"; accessibilityLabel = "1"; ObjectID = "73"; */
+"73.accessibilityLabel" = "1";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Add call"; ObjectID = "88"; */
+"88.accessibilityLabel" = "加話";
+
+/* Class = "IBUIButton"; normalTitle = "Add call"; ObjectID = "88"; */
+"88.normalTitle" = "加話";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Transfer call"; ObjectID = "90"; */
+"90.accessibilityLabel" = "轉接電話";
+
+/* Class = "IBUIButton"; normalTitle = "Transfer"; ObjectID = "90"; */
+
+"90.normalTitle" = "轉接";
+
+/* Class = "IBUIButton"; normalTitle = "Options"; ObjectID = "110"; */
+"110.normalTitle" = "設定";
+
+/* Class = "IBUIButton"; normalTitle = "Speaker"; ObjectID = "111"; */
+"111.normalTitle" = "揚聲器";
+
+/* Class = "IBUIButton"; normalTitle = "Micro"; ObjectID = "112"; */
+"112.normalTitle" = "麥克風";
+
+/* Class = "IBUIButton"; normalTitle = "Video"; ObjectID = "113"; */
+"113.normalTitle" = "視訊";
+
+/* Class = "IBUIButton"; normalTitle = "Add call"; ObjectID = "127"; */
+"127.normalTitle" = "加話";
+
+/* Class = "IBUIButton"; normalTitle = "Transfer"; ObjectID = "128"; */
+"128.normalTitle" = "轉接";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Route"; ObjectID = "164"; */
+"164.accessibilityLabel" = "裝置";
+
+/* Class = "IBUIButton"; normalTitle = "Route"; ObjectID = "164"; */
+"164.normalTitle" = "裝置";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Speaker"; ObjectID = "168"; */
+"168.accessibilityLabel" = "揚聲器";
+
+/* Class = "IBUIButton"; normalTitle = "Speaker"; ObjectID = "168"; */
+"168.normalTitle" = "揚聲器";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Receiver"; ObjectID = "169"; */
+"169.accessibilityLabel" = "接收器";
+
+/* Class = "IBUIButton"; normalTitle = "Receiver"; ObjectID = "169"; */
+"169.normalTitle" = "接收器";
+
+/* Class = "IBUIButton"; accessibilityLabel = "Bluetooth"; ObjectID = "174"; */
+"174.accessibilityLabel" = "藍牙";
+
+/* Class = "IBUIButton"; normalTitle = "Bluetooth"; ObjectID = "174"; */
+"174.normalTitle" = "藍牙";
+
+/* Class = "IBUIButton"; normalTitle = "Route"; ObjectID = "183"; */
+"183.normalTitle" = "裝置";
+
+/* Class = "IBUIButton"; normalTitle = "Speaker"; ObjectID = "187"; */
+"187.normalTitle" = "揚聲器";
+
+/* Class = "IBUIButton"; normalTitle = "Receiver"; ObjectID = "188"; */
+"188.normalTitle" = "接收器";
+
+/* Class = "IBUIButton"; normalTitle = "Bluetooth"; ObjectID = "193"; */
+"193.normalTitle" = "藍牙";
+
+"GCc-Uo-nXR.normalTitle" ="加話";
+"tZw-39-1bD.normalTitle" ="轉接";
+"D2P-Lo-Qu9.normalTitle" ="訊息";

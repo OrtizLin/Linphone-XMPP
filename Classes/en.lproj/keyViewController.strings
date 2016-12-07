@@ -1,0 +1,21 @@
+
+/* Class = "IBUIButton"; normalTitle = "Download"; ObjectID = "3lC-mU-i9q"; */
+"3lC-mU-i9q.normalTitle" = "Download";
+
+/* Class = "IBUIButton"; normalTitle = "Send"; ObjectID = "p2g-8x-wMw"; */
+"p2g-8x-wMw.normalTitle" = "Connect";
+
+/* Class = "IBUILabel"; text = "Password:"; ObjectID = "qVs-SD-siL"; */
+"qVs-SD-siL.text" = "Password:";
+
+/* Class = "IBUILabel"; text = "Set Host:"; ObjectID = "wCD-lJ-ZPX"; */
+"wCD-lJ-ZPX.text" = "Key Host IP:";
+
+/* Class = "IBUILabel"; text = "Account:"; ObjectID = "yOa-VA-uCJ"; */
+"yOa-VA-uCJ.text" = "Account:";
+/* Title of AlertView */
+"Invalid IP" = "Invalid";
+/* Cancel Button Title */
+"confirm" = "confirm";
+/* Title of AlertView */
+"Account or Password is Wrong!" = "Account or Password is Wrong!";

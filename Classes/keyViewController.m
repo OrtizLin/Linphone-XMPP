@@ -137,8 +137,19 @@
                                                   NSString * file = [str stringByAppendingString:@"_"];
                                                   NSString * file2 = [file stringByAppendingString:lowercase];
                                                   NSString * filename = [file2  stringByAppendingString:@".ovpn"];
-                                                  NSURL *documentsDirectoryPath = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]];
                                                  
+                                                  NSString *documentPath = [self applicationDocumentsFileDirectory];
+                                                  NSString *currentFilePath = [documentPath stringByAppendingPathComponent:filename];
+                                                  if ([[NSFileManager defaultManager]fileExistsAtPath:currentFilePath]) {
+                                                      BOOL success = [[NSFileManager defaultManager] removeItemAtPath:currentFilePath error:nil];
+                                                      if (success) {
+                                                          NSLog(@"file deleted ");
+                                                      }
+                                                  }
+                                                 
+                                                  
+                                                  NSURL *documentsDirectoryPath = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]];
+                                                  
                                                   NSString *nameofovpn = @"ovpn";
                                                   NSRange rangeofovpn =[[response suggestedFilename]rangeOfString:nameofovpn];
                                                   if(rangeofovpn.location ==NSNotFound){
@@ -202,6 +213,12 @@
     }
     
     
+}
+
+- (NSString *)applicationDocumentsFileDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    return basePath;
 }
 - (void)presentDocumentWithURL2:(NSURL*)url {
     self.documentController = [UIDocumentInteractionController interactionControllerWithURL:url];

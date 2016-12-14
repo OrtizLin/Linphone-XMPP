@@ -13,20 +13,16 @@
 #define kRejectTag 105
 #define kAcceptTag 106
 #define RequestTag 107
-#define ReconnectTag 10
-#define AddFriendTag 6
-#define RoomTag 1
-#define PersistentRoomTag 3
-#define PersistentTag 4
-#define NonPersistentTag 5
 #define AddTag 1
-#define EditAliasTag 2
-#define PasswordTag 11
-#define PresenceTag 6
 #define SelfButtonClickTag 2
-#define RemoveTag 5
-#define RemoveRoomTag 4
+#define EditAliasTag 2
 #define ChangePresenceTag 3
+#define RemoveTag 5
+#define PresenceTag 6
+#define AddFriendTag 6
+#define PasswordTag 11
+#define ReconnectTag 10
+
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
 static const int ddLogLevel = LOG_LEVEL_VERBOSE;
@@ -77,8 +73,11 @@ static UICompositeViewDescription *compositeDescription = nil;
     [super viewDidAppear:animated];
    
     if(![[[LinphoneAppDelegate sharedAppDelegate]xmppStream]isConnected]){
+        NSString *selfUserName = [[NSUserDefaults standardUserDefaults]objectForKey:kXMPPmyJID];
         
-        [self refresh];
+        if(selfUserName !=nil){
+            [self refresh];
+        }
         
     }
     else{
@@ -92,6 +91,44 @@ static UICompositeViewDescription *compositeDescription = nil;
    
     
 }
+
+- (void)viewDidLoad
+{
+    
+    [super viewDidLoad];
+    
+    
+    
+    //add hostname account as friend to receive Emergency Messages from iguardian.
+    NSString *selfUserName = [[NSUserDefaults standardUserDefaults]objectForKey:kXMPPmyJID];
+    
+    if(selfUserName !=nil){
+        NSRange search = [selfUserName rangeOfString:@"@"];
+        
+        NSString *hostname = [selfUserName substringFromIndex:search.location+1];
+        
+        XMPPJID *jid = [XMPPJID jidWithString:hostname];
+        [[[LinphoneAppDelegate sharedAppDelegate] xmppRoster] addUser:jid withNickname:@" System"];
+    }
+    
+    
+    
+    
+    
+}
+
+-(void)loadView{
+    
+    [self setContainer];
+    [self setNavigationBar];
+    [self setSelfName];
+    [self setSelfButton];
+    [self setSelfImage];
+    [self setTableView];
+    [self setRefreshButton];
+    
+}
+
 -(void)butClick{
     
     if([[[LinphoneAppDelegate sharedAppDelegate]xmppStream]isConnected]){
@@ -293,17 +330,6 @@ static UICompositeViewDescription *compositeDescription = nil;
     [DataTable addSubview:self.refreshControl];
 }
 
--(void)loadView{
-    
-        [self setContainer];
-        [self setNavigationBar];
-        [self setSelfName];
-        [self setSelfButton];
-        [self setSelfImage];
-        [self setTableView];
-        [self setRefreshButton];
-    
-}
 
 //left button.
 
@@ -339,38 +365,7 @@ static UICompositeViewDescription *compositeDescription = nil;
         
     }
 }
-//right button.
 
--(void)setchatroom{
-    if(! [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]isAuthenticated]){
-        
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:NSLocalizedString(@"Message send failure ",nil) message:NSLocalizedString(@"Suggestion: Click Next, then Click any selected Reconnect option, or return to device Home Page to adjust 3G, 4G, Wifi, VPN Settings ",nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",nil) otherButtonTitles:NSLocalizedString(@"Next",nil),  nil];
-        
-        alert.tag = ReconnectTag;
-        [alert show];
-        [alert release];
-    }
-    else{
-    UIActionSheet *action = [[UIActionSheet alloc]
-                             initWithTitle:NSLocalizedString(@"Conference",nil)
-                             delegate:self
-                             cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                             destructiveButtonTitle:nil
-                             otherButtonTitles:NSLocalizedString(@"Conference List",nil),NSLocalizedString(@"Create Conference",nil),nil];
-    action.tag=RoomTag;
-    
-    if (IS_IPHONE)
-    {
-        [action showInView:[[UIApplication sharedApplication] keyWindow]];
-        
-    }
-    else{
-        [action showInView:self.view];
-        
-    }
-    [action release];
-    }
-}
 
 - (void)getListOfGroups{
     
@@ -504,211 +499,9 @@ static UICompositeViewDescription *compositeDescription = nil;
             [[[LinphoneAppDelegate sharedAppDelegate] xmppRoster] addUser:jid withNickname:[alertView textFieldAtIndex:0].text];
         }
     }
-    else if(alertView.tag == PersistentRoomTag && buttonIndex==1){
-        
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Create Conference",nil)
-                                                        message:@""
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                              otherButtonTitles:NSLocalizedString(@"Add",nil), nil];
-        
-        
-        alert.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
-        
-        [alert textFieldAtIndex:0].placeholder =NSLocalizedString(@"Conference name",nil);
-        [alert textFieldAtIndex:1].placeholder =NSLocalizedString(@"Password(optional)",nil) ;
-        [alert textFieldAtIndex:1].secureTextEntry = NO;
-        alert.tag = PersistentTag;
-        [alert show];
-    }
-    else if(alertView.tag == PersistentRoomTag && buttonIndex ==2){
-        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Create Conference",nil)
-                                                        message:@""
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                              otherButtonTitles:NSLocalizedString(@"Add",nil), nil];
-        
-        
-        alert.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
-        
-        [alert textFieldAtIndex:0].placeholder =NSLocalizedString(@"Conference name",nil);
-        [alert textFieldAtIndex:1].placeholder =NSLocalizedString(@"Password(optional)",nil) ;
-        [alert textFieldAtIndex:1].secureTextEntry = NO;
-        alert.tag = NonPersistentTag;
-        [alert show];
-    }
+
     
-    else if (alertView.tag == 12 && buttonIndex ==1){
-        
-        NSString *path = [NSString stringWithFormat:@"%@/Documents/SIPTWO.plist",NSHomeDirectory()];
-        NSMutableDictionary *plist =[NSMutableDictionary dictionaryWithContentsOfFile:path];
-        NSString *username =[plist objectForKey:@"Xmppid"];
-        NSString *password =[plist objectForKey:@"Xmpppassword"];
-        NSString *domain = [plist objectForKey:@"Domain"];
-        NSString *photo =[plist objectForKey:@"Photo"];
-        NSString *location = [plist objectForKey:@"Location"];
-        [[LinphoneManager instance] lpConfigSetString:photo forKey:@"xmppfile_preference"];
-        [[LinphoneManager instance] lpConfigSetString:location forKey:@"geoloc_preference"];
-        [[LinphoneManager instance] lpConfigSetString:username forKey:@"xmppid_preference"];
-        [[LinphoneManager instance] lpConfigSetString:password forKey:@"xmpppsw_preference"];
-        [[LinphoneManager instance] lpConfigSetString:domain forKey:@"xmppdomain_preference"];
-        [self resetField:@"" forKey:kXMPPmyJID];
-        [self resetField:@"" forKey:kXMPPmyPassword];
-        [self resetField:@"" forKey:kXMPPHost];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppStream ]disconnect];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppvCardTempModule] removeDelegate:self];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppRosterStorage] clearAllUsersAndResourcesForXMPPStream:[LinphoneAppDelegate sharedAppDelegate].xmppStream];
-        [self setField:domain forKey:kXMPPHost];
-        [self setField:username forKey:kXMPPmyJID];
-        [self setField:password forKey:kXMPPmyPassword];
-        [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]setHostName:domain];
-        [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]setHostPort:5222];
-        
-        NSString *sipusername =[plist objectForKey:@"Username"];
-        NSString *sippassword =[plist objectForKey:@"Password"];
-        NSString *voicemail = [plist objectForKey:@"VoiceMail"];
-        [[LinphoneManager instance] lpConfigSetString:sipusername forKey:@"username_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:sippassword forKey:@"password_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:domain forKey:@"domain_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:voicemail forKey:@"voicemail_preference"];
-        
-        [self addProxyConfig:sipusername password:sippassword domain:domain];
-        
-        [[LinphoneAppDelegate sharedAppDelegate] connect];
-        [[PhoneMainView instance] startUp];
-        
-    }
-    else if(alertView.tag ==12 && buttonIndex ==2){
-        
-        NSString *path = [NSString stringWithFormat:@"%@/Documents/SIPTHREE.plist",NSHomeDirectory()];
-        NSMutableDictionary *plist =[NSMutableDictionary dictionaryWithContentsOfFile:path];
-        NSString *username =[plist objectForKey:@"Xmppid"];
-        NSString *password =[plist objectForKey:@"Xmpppassword"];
-        NSString *domain = [plist objectForKey:@"Domain"];
-        NSString *photo =[plist objectForKey:@"Photo"];
-        NSString *location = [plist objectForKey:@"Location"];
-        [[LinphoneManager instance] lpConfigSetString:photo forKey:@"xmppfile_preference"];
-        [[LinphoneManager instance] lpConfigSetString:location forKey:@"geoloc_preference"];
-        [[LinphoneManager instance] lpConfigSetString:username forKey:@"xmppid_preference"];
-        [[LinphoneManager instance] lpConfigSetString:password forKey:@"xmpppsw_preference"];
-        [[LinphoneManager instance] lpConfigSetString:domain forKey:@"xmppdomain_preference"];
-        [self resetField:@"" forKey:kXMPPmyJID];
-        [self resetField:@"" forKey:kXMPPmyPassword];
-        [self resetField:@"" forKey:kXMPPHost];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppStream ]disconnect];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppvCardTempModule] removeDelegate:self];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppRosterStorage] clearAllUsersAndResourcesForXMPPStream:[LinphoneAppDelegate sharedAppDelegate].xmppStream];
-        [self setField:domain forKey:kXMPPHost];
-        [self setField:username forKey:kXMPPmyJID];
-        [self setField:password forKey:kXMPPmyPassword];
-        [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]setHostName:domain];
-        [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]setHostPort:5222];
-        
-        NSString *sipusername =[plist objectForKey:@"Username"];
-        NSString *sippassword =[plist objectForKey:@"Password"];
-        NSString *voicemail = [plist objectForKey:@"VoiceMail"];
-        [[LinphoneManager instance] lpConfigSetString:sipusername forKey:@"username_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:sippassword forKey:@"password_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:domain forKey:@"domain_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:voicemail forKey:@"voicemail_preference"];
-        [self addProxyConfig:sipusername password:sippassword domain:domain];
-        
-        [[LinphoneAppDelegate sharedAppDelegate] connect];
-        [[PhoneMainView instance] startUp];
-        
-    }
-    else if(alertView.tag ==12 && buttonIndex ==3){
-        
-        NSString *path = [NSString stringWithFormat:@"%@/Documents/SIPFOUR.plist",NSHomeDirectory()];
-        NSMutableDictionary *plist =[NSMutableDictionary dictionaryWithContentsOfFile:path];
-        NSString *username =[plist objectForKey:@"Xmppid"];
-        NSString *password =[plist objectForKey:@"Xmpppassword"];
-        NSString *domain = [plist objectForKey:@"Domain"];
-        NSString *photo =[plist objectForKey:@"Photo"];
-        NSString *location = [plist objectForKey:@"Location"];
-        [[LinphoneManager instance] lpConfigSetString:photo forKey:@"xmppfile_preference"];
-        [[LinphoneManager instance] lpConfigSetString:location forKey:@"geoloc_preference"];
-        [[LinphoneManager instance] lpConfigSetString:username forKey:@"xmppid_preference"];
-        [[LinphoneManager instance] lpConfigSetString:password forKey:@"xmpppsw_preference"];
-        [[LinphoneManager instance] lpConfigSetString:domain forKey:@"xmppdomain_preference"];
-        [self resetField:@"" forKey:kXMPPmyJID];
-        [self resetField:@"" forKey:kXMPPmyPassword];
-        [self resetField:@"" forKey:kXMPPHost];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppStream ]disconnect];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppvCardTempModule] removeDelegate:self];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppRosterStorage] clearAllUsersAndResourcesForXMPPStream:[LinphoneAppDelegate sharedAppDelegate].xmppStream];
-        [self setField:domain forKey:kXMPPHost];
-        [self setField:username forKey:kXMPPmyJID];
-        [self setField:password forKey:kXMPPmyPassword];
-        [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]setHostName:domain];
-        [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]setHostPort:5222];
-        
-        NSString *sipusername =[plist objectForKey:@"Username"];
-        NSString *sippassword =[plist objectForKey:@"Password"];
-        NSString *voicemail = [plist objectForKey:@"VoiceMail"];
-        [[LinphoneManager instance] lpConfigSetString:sipusername forKey:@"username_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:sippassword forKey:@"password_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:domain forKey:@"domain_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:voicemail forKey:@"voicemail_preference"];
-        [self addProxyConfig:sipusername password:sippassword domain:domain];
-        
-        [[LinphoneAppDelegate sharedAppDelegate] connect];
-        [[PhoneMainView instance] startUp];
-        
-    }
-    else if(alertView.tag ==12 && buttonIndex ==4){
-        
-        NSString *path = [NSString stringWithFormat:@"%@/Documents/SIPFIVE.plist",NSHomeDirectory()];
-        NSMutableDictionary *plist =[NSMutableDictionary dictionaryWithContentsOfFile:path];
-        NSString *username =[plist objectForKey:@"Xmppid"];
-        NSString *password =[plist objectForKey:@"Xmpppassword"];
-        NSString *domain = [plist objectForKey:@"Domain"];
-        NSString *photo =[plist objectForKey:@"Photo"];
-        NSString *location = [plist objectForKey:@"Location"];
-        [[LinphoneManager instance] lpConfigSetString:photo forKey:@"xmppfile_preference"];
-        [[LinphoneManager instance] lpConfigSetString:location forKey:@"geoloc_preference"];
-        [[LinphoneManager instance] lpConfigSetString:username forKey:@"xmppid_preference"];
-        [[LinphoneManager instance] lpConfigSetString:password forKey:@"xmpppsw_preference"];
-        [[LinphoneManager instance] lpConfigSetString:domain forKey:@"xmppdomain_preference"];
-        [self resetField:@"" forKey:kXMPPmyJID];
-        [self resetField:@"" forKey:kXMPPmyPassword];
-        [self resetField:@"" forKey:kXMPPHost];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppStream ]disconnect];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppvCardTempModule] removeDelegate:self];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppRosterStorage] clearAllUsersAndResourcesForXMPPStream:[LinphoneAppDelegate sharedAppDelegate].xmppStream];
-        [self setField:domain forKey:kXMPPHost];
-        [self setField:username forKey:kXMPPmyJID];
-        [self setField:password forKey:kXMPPmyPassword];
-        [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]setHostName:domain];
-        [[[LinphoneAppDelegate sharedAppDelegate]xmppStream]setHostPort:5222];
-        
-        NSString *sipusername =[plist objectForKey:@"Username"];
-        NSString *sippassword =[plist objectForKey:@"Password"];
-        NSString *voicemail = [plist objectForKey:@"VoiceMail"];
-        [[LinphoneManager instance] lpConfigSetString:sipusername forKey:@"username_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:sippassword forKey:@"password_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:domain forKey:@"domain_preference"];
-        
-        [[LinphoneManager instance] lpConfigSetString:voicemail forKey:@"voicemail_preference"];
-        [self addProxyConfig:sipusername password:sippassword domain:domain];
-        
-        [[LinphoneAppDelegate sharedAppDelegate] connect];
-        [[PhoneMainView instance] startUp];
-        
-        
-    }
-    else if(alertView.tag ==RequestTag){
+       else if(alertView.tag ==RequestTag){
         if(buttonIndex ==0){
          
             // Reject request.
@@ -793,209 +586,6 @@ static UICompositeViewDescription *compositeDescription = nil;
                                 history:nil
                                password:[alertView textFieldAtIndex:0].text];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(populateArray2:) name:@"errorArray" object:nil];
-        
-    }
-    else if(alertView.tag == PersistentTag && buttonIndex ==1){
-        NSString *selfUserName = [[NSUserDefaults standardUserDefaults]objectForKey:kXMPPmyJID];
-        NSRange search = [selfUserName rangeOfString:@"@"];
-        
-        NSString *hostname = [selfUserName substringFromIndex:search.location+1];
-        if([[alertView textFieldAtIndex:0].text isEqualToString:@""]){
-           
-            
-        }
-        else{
-            
-            NSString *roomname = [alertView textFieldAtIndex:0].text;
-            NSString *nickname = [[NSUserDefaults standardUserDefaults]objectForKey:kXMPPmyJID];
-            
-            NSString *roomid = [roomname stringByAppendingFormat:@"%@%@%@",@"@",@"conference.", hostname];
-           
-            XMPPRoomCoreDataStorage *rosterstorage = [[XMPPRoomCoreDataStorage alloc] init];
-            if (rosterstorage==nil) {
-               
-                rosterstorage = [[XMPPRoomCoreDataStorage alloc] init];
-            }
-            XMPPRoom *xmppRoom = [[XMPPRoom alloc] initWithRoomStorage:rosterstorage jid:[XMPPJID jidWithString:roomid] dispatchQueue:nil];
-            
-            [xmppRoom activate:[[LinphoneAppDelegate sharedAppDelegate] xmppStream]];
-            
-            [xmppRoom joinRoomUsingNickname:nickname history:nil password:[alertView textFieldAtIndex:1].text];
-            
-            
-            
-            
-            NSString *myJid = [NSString stringWithFormat:@"%@",[[[LinphoneAppDelegate sharedAppDelegate]xmppStream]myJID]];
-            [xmppRoom fetchConfigurationForm];
-            [xmppRoom configureRoomUsingOptions:nil jid:myJid];
-            
-            
-            if([[alertView textFieldAtIndex:1].text isEqualToString:@""]){
-               
-                
-                sleep(1); //set password after 0.5 sec when room is created.
-                
-                NSXMLElement *x = [NSXMLElement elementWithName:@"x"];
-                
-                [x addAttributeWithName:@"xmlns" stringValue:@"jabber:x:data"];
-                
-                [x addAttributeWithName:@"type" stringValue:@"submit"];
-                NSXMLElement *fielda =[NSXMLElement elementWithName:@"field"];
-                [fielda addAttributeWithName:@"var" stringValue:@"muc#roomconfig_persistentroom"];
-                [fielda addAttributeWithName:@"type"stringValue:@"boolean"];
-                
-                [fielda addChild:[NSXMLElement elementWithName:@"value" stringValue:@"1"]];
-                [x addChild:fielda];
-                NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:@"http://jabber.org/protocol/muc#owner"];
-                
-                NSXMLElement *iq = [NSXMLElement elementWithName:@"iq"];
-                
-                
-                [iq addAttributeWithName:@"to" stringValue:roomid];
-                
-                [iq addAttributeWithName:@"from" stringValue:myJid];
-                
-                [iq addAttributeWithName:@"type" stringValue:@"set"];
-                
-                [query addChild:x];
-                
-                [iq addChild:query];
-                
-                [[[LinphoneAppDelegate sharedAppDelegate] xmppStream] sendElement:iq];
-                
-                
-                
-            }
-            else{
-                
-                sleep(1); //set password after 0.5 sec when room is created.
-               
-                NSXMLElement *x = [NSXMLElement elementWithName:@"x"];
-                
-                [x addAttributeWithName:@"xmlns" stringValue:@"jabber:x:data"];
-                
-                [x addAttributeWithName:@"type" stringValue:@"submit"];
-                NSXMLElement *fielda =[NSXMLElement elementWithName:@"field"];
-                [fielda addAttributeWithName:@"var" stringValue:@"muc#roomconfig_persistentroom"];
-                
-                [fielda removeChildAtIndex:0];
-                [fielda addChild:[NSXMLElement elementWithName:@"value" stringValue:@"1"]];
-                [x addChild:fielda];
-                
-                NSXMLElement *field = [NSXMLElement elementWithName:@"field"];
-                [field addAttributeWithName:@"type"stringValue:@"boolean"];
-                [field addAttributeWithName:@"var"stringValue:@"muc#roomconfig_passwordprotectedroom"];
-                [field addChild:[NSXMLElement elementWithName:@"value" stringValue:@"1"]];
-                
-                [x addChild:field];
-                
-                
-                NSXMLElement *fields = [NSXMLElement elementWithName:@"field"];
-                [fields addAttributeWithName:@"type"stringValue:@"text-private"];
-                [fields addAttributeWithName:@"var"stringValue:@"muc#roomconfig_roomsecret"];
-                [fields addChild:[NSXMLElement elementWithName:@"value" stringValue:[alertView textFieldAtIndex:1].text]];
-                [x addChild:fields];
-                NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:@"http://jabber.org/protocol/muc#owner"];
-                
-                NSXMLElement *iq = [NSXMLElement elementWithName:@"iq"];
-                
-                
-                [iq addAttributeWithName:@"to" stringValue:roomid];
-                
-                [iq addAttributeWithName:@"from" stringValue:myJid];
-                
-                [iq addAttributeWithName:@"type" stringValue:@"set"];
-                
-                [query addChild:x];
-                
-                [iq addChild:query];
-                
-                [[[LinphoneAppDelegate sharedAppDelegate] xmppStream] sendElement:iq];
-            }
-            
-        }
-        
-    }
-    else if(alertView.tag == NonPersistentTag &&buttonIndex ==1){
-        NSString *selfUserName = [[NSUserDefaults standardUserDefaults]objectForKey:kXMPPmyJID];
-        NSRange search = [selfUserName rangeOfString:@"@"];
-        
-        NSString *hostname = [selfUserName substringFromIndex:search.location+1];
-        if([[alertView textFieldAtIndex:0].text isEqualToString:@""]){
-            
-            
-        }
-        
-        else{
-            
-            NSString *roomname = [alertView textFieldAtIndex:0].text;
-            NSString *nickname = [[NSUserDefaults standardUserDefaults]objectForKey:kXMPPmyJID];
-            
-            NSString *roomid = [roomname stringByAppendingFormat:@"%@%@%@",@"@",@"conference.", hostname];
-         
-            XMPPRoomCoreDataStorage *rosterstorage = [[XMPPRoomCoreDataStorage alloc] init];
-            if (rosterstorage==nil) {
-           
-                rosterstorage = [[XMPPRoomCoreDataStorage alloc] init];
-            }
-            XMPPRoom *xmppRoom = [[XMPPRoom alloc] initWithRoomStorage:rosterstorage jid:[XMPPJID jidWithString:roomid] dispatchQueue:nil];
-            
-            [xmppRoom activate:[[LinphoneAppDelegate sharedAppDelegate] xmppStream]];
-            
-            [xmppRoom joinRoomUsingNickname:nickname history:nil password:[alertView textFieldAtIndex:1].text];
-            
-            
-            
-            
-            NSString *myJid = [NSString stringWithFormat:@"%@",[[[LinphoneAppDelegate sharedAppDelegate]xmppStream]myJID]];
-            [xmppRoom fetchConfigurationForm];
-            [xmppRoom configureRoomUsingOptions:nil jid:myJid];
-            
-            
-            if([[alertView textFieldAtIndex:1].text isEqualToString:@""]){
-                
-            }
-            else{
-                
-                sleep(1); //set password after 0.5 sec when room is created.
-              
-                NSXMLElement *x = [NSXMLElement elementWithName:@"x"];
-                
-                [x addAttributeWithName:@"xmlns" stringValue:@"jabber:x:data"];
-                
-                [x addAttributeWithName:@"type" stringValue:@"submit"];
-                NSXMLElement *field = [NSXMLElement elementWithName:@"field"];
-                [field addAttributeWithName:@"type"stringValue:@"boolean"];
-                [field addAttributeWithName:@"var"stringValue:@"muc#roomconfig_passwordprotectedroom"];
-                [field addChild:[NSXMLElement elementWithName:@"value" stringValue:@"1"]];
-                
-                [x addChild:field];
-                
-                
-                NSXMLElement *fields = [NSXMLElement elementWithName:@"field"];
-                [fields addAttributeWithName:@"type"stringValue:@"text-private"];
-                [fields addAttributeWithName:@"var"stringValue:@"muc#roomconfig_roomsecret"];
-                [fields addChild:[NSXMLElement elementWithName:@"value" stringValue:[alertView textFieldAtIndex:1].text]];
-                [x addChild:fields];
-                NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:@"http://jabber.org/protocol/muc#owner"];
-                
-                NSXMLElement *iq = [NSXMLElement elementWithName:@"iq"];
-                
-                
-                [iq addAttributeWithName:@"to" stringValue:roomid];
-                
-                [iq addAttributeWithName:@"from" stringValue:myJid];
-                
-                [iq addAttributeWithName:@"type" stringValue:@"set"];
-                
-                [query addChild:x];
-                
-                [iq addChild:query];
-                
-                [[[LinphoneAppDelegate sharedAppDelegate] xmppStream] sendElement:iq];
-            }
-            
-        }
         
     }
     else if(alertView.tag ==PresenceTag){
@@ -1164,65 +754,8 @@ static UICompositeViewDescription *compositeDescription = nil;
         
         
     }
-    else if(actionSheet.tag == RemoveRoomTag && buttonIndex ==0){
   
-        XMPPPresence *presence = [XMPPPresence presence];
-        
-        [presence addAttributeWithName:@"to" stringValue:actionSheet.title];
-        [presence addAttributeWithName:@"type" stringValue:@"unavailable"];
-        
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppStream] sendElement:presence];
-        
-        XMPPJID *xmppjid = [XMPPJID jidWithString:actionSheet.title];
-        sleep(1);
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppRoster] removeUser:xmppjid];
-        
-    }
-    else if(actionSheet.tag == RemoveRoomTag && buttonIndex ==1){
-        
-        XMPPPresence *presence = [XMPPPresence presence];
-        
-        [presence addAttributeWithName:@"to" stringValue:actionSheet.title];
-        [presence addAttributeWithName:@"type" stringValue:@"unavailable"];
-        
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppStream] sendElement:presence];
-        
-        
-        
-        NSString *selfUserName = [[NSUserDefaults standardUserDefaults]objectForKey:kXMPPmyJID];
-        NSXMLElement *x = [NSXMLElement elementWithName:@"destroy"];
-        
-        [x addAttributeWithName:@"xmlns" stringValue:@"jabber:x:data"];
-        
-        [x addAttributeWithName:@"type" stringValue:@"submit"];
-        NSXMLElement *fielda =[NSXMLElement elementWithName:@"destroy"];
-        [fielda addAttributeWithName:@"jid" stringValue:actionSheet.title];
-        [fielda addAttributeWithName:@"reason" stringValue:@"this room is over."];
-        [x addChild:fielda];
-        NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:@"http://jabber.org/protocol/muc#owner"];
-        
-        NSXMLElement *iq = [NSXMLElement elementWithName:@"iq"];
-        
-        [iq addAttributeWithName:@"to" stringValue:actionSheet.title];
-        
-        [iq addAttributeWithName:@"from" stringValue:selfUserName];
-        
-        [iq addAttributeWithName:@"type" stringValue:@"set"];
-        
-        [query addChild:x];
-        
-        [iq addChild:query];
-        XMPPJID *xmppjid = [XMPPJID jidWithString:actionSheet.title];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppStream] sendElement:iq];
-        
-        
-        sleep(1);
-        
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppRoster] removeUser:xmppjid];
-  
-        
-    }
-    else if(actionSheet.tag == ChangePresenceTag){
+       else if(actionSheet.tag == ChangePresenceTag){
         if(buttonIndex ==2){
             XMPPPresence *presence = [XMPPPresence presence];
             NSXMLElement *show = [NSXMLElement elementWithName:@"show" stringValue:@"dnd"];
@@ -1395,29 +928,6 @@ static UICompositeViewDescription *compositeDescription = nil;
                 
                 [alert show];
             }
-            else{
-                
-                UIActionSheet *action = [[UIActionSheet alloc]
-                                         initWithTitle:user.jidStr
-                                         delegate:self
-                                         cancelButtonTitle:NSLocalizedString(@"Cancel",nil)
-                                         destructiveButtonTitle:nil
-                                         otherButtonTitles:NSLocalizedString(@"Leave conference",nil),NSLocalizedString(@"Destroy conference",nil),nil];
-                action.tag = RemoveRoomTag;
-                if (IS_IPHONE)
-                {
-                    [action showInView:[[UIApplication sharedApplication] keyWindow]];
-                    
-                }
-                else{
-                    [action showInView:self.view];
-                    
-                }
-                [action release];
-                
-                
-                
-            }
             break;
         case 1:
         {
@@ -1504,46 +1014,27 @@ static UICompositeViewDescription *compositeDescription = nil;
 #pragma mark NSFetchedResultsController
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)viewDidLoad
-{
-    
-    [super viewDidLoad];
-    
-    
-    
-//add hostname account as friend to receive Emergency Messages from iguardian.
-    NSString *selfUserName = [[NSUserDefaults standardUserDefaults]objectForKey:kXMPPmyJID];
-    
-    if(selfUserName !=nil){
-        NSRange search = [selfUserName rangeOfString:@"@"];
-        
-        NSString *hostname = [selfUserName substringFromIndex:search.location+1];
-        
-        XMPPJID *jid = [XMPPJID jidWithString:hostname];
-        [[[LinphoneAppDelegate sharedAppDelegate] xmppRoster] addUser:jid withNickname:@" System"];
-    }
-    
-    
-    
-    
-    
-}
+
 
 -(void)refresh{
  
     
-    [[[LinphoneAppDelegate sharedAppDelegate] xmppStream ]disconnect];
-    [[[LinphoneAppDelegate sharedAppDelegate] xmppvCardTempModule] removeDelegate:self];
-    [[[LinphoneAppDelegate sharedAppDelegate]xmppRosterStorage]clearAllUsersAndResourcesForXMPPStream:[[LinphoneAppDelegate sharedAppDelegate]xmppStream]];
-    [[LinphoneAppDelegate sharedAppDelegate] connect];
-    
-    
-
-
-    [DataTable reloadData];
-    
-    [self.refreshControl endRefreshing];
-    [self updatestate];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[[LinphoneAppDelegate sharedAppDelegate] xmppStream ]disconnect];
+        [[[LinphoneAppDelegate sharedAppDelegate] xmppvCardTempModule] removeDelegate:self];
+        [[[LinphoneAppDelegate sharedAppDelegate]xmppRosterStorage]clearAllUsersAndResourcesForXMPPStream:[[LinphoneAppDelegate sharedAppDelegate]xmppStream]];
+        [[LinphoneAppDelegate sharedAppDelegate] connect];
+        
+        
+        
+        
+        [DataTable reloadData];
+        
+        [self updatestate];
+        
+        [self.refreshControl endRefreshing];
+        
+    });
 }
 -(void)updatestate{
     sleep(1);

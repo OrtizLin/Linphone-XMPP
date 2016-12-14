@@ -872,7 +872,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     }
     
     
-    
+  
+ 
     // Setup the XMPP stream
   
     [self setupStream];

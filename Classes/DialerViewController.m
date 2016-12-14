@@ -169,7 +169,7 @@ static UICompositeViewDescription *compositeDescription = nil;
         // fix placeholder bar color in iOS7
         UIColor *color = [UIColor grayColor];
         NSString *phonenumber = NSLocalizedString(@"Registered No : ", nil);
-        NSString *num =[[LinphoneManager instance] lpConfigStringForKey:@"username_preferˇence"];
+        NSString *num =[[LinphoneManager instance] lpConfigStringForKey:@"username_preference"];
         if(num.length <=1){
             
             NSAttributedString* placeHolderString = [[NSAttributedString alloc]

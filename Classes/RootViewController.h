@@ -3,6 +3,7 @@
 #import "PersonEntity.h"
 #import "SWTableViewCell.h"
 #import "UICompositeViewController.h"
+#import "XMPPUserCoreDataStorageObject.h"
 
 @interface RootViewController : UIViewController <UITableViewDelegate,NSFetchedResultsControllerDelegate,UITableViewDataSource,UIAlertViewDelegate,UIActionSheetDelegate,SWTableViewCellDelegate,UICompositeViewDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
